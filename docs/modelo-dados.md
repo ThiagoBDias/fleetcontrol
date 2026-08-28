@@ -1,225 +1,250 @@
 # Modelo de Dados — FleetControl
 
-## 1. Entidades principais
+## 1. Visão geral
 
-O núcleo operacional do sistema será composto inicialmente por:
+O FleetControl é um sistema de controle e gestão operacional para mineração.
 
+O núcleo do sistema controla:
+
+- equipamentos;
+- operadores;
+- locações;
+- alocações;
+- viagens;
+- eventos operacionais;
+- polígonos geográficos;
+- checklist e bloqueios;
+- ordem de serviço;
+- correções;
+- contingências;
+- aprovações.
+
+O modelo foi estruturado para preservar o histórico operacional e impedir inconsistências como:
+
+- equipamento em duas locações simultaneamente;
+- operador operando dois equipamentos simultaneamente;
+- caminhão pertencendo a duas frentes simultaneamente;
+- troca de equipamento no meio de uma viagem;
+- apontamento fora de área operacional válida.
+
+---
+
+# 2. Entidades principais
+
+- Empresa
+- Mina
 - Operador
+- Modelo de equipamento
 - Equipamento
+- Polígono
 - Locação
 - Alocação de equipamento
 - Alocação de operador
 - Viagem
 - Evento da viagem
-- Polígono
 - Checklist
 - Ordem de serviço
 - Correção
+- Contingência
 - Aprovação
 
 ---
 
-## 2. Operador
+# 3. Empresa
 
-Representa a pessoa que opera um equipamento.
+Representa a empresa responsável pela operação.
 
 Informações principais:
 
 - id
+- nome
+- status
+- data de criação
+
+Uma empresa pode possuir uma ou mais minas.
+
+Relacionamento:
+
+EMPRESA 1:N MINA
+
+---
+
+# 4. Mina
+
+Representa uma unidade operacional.
+
+Informações principais:
+
+- id
+- empresa_id
+- nome
+- código
+- status
+
+Relacionamentos:
+
+MINA 1:N OPERADOR
+
+MINA 1:N EQUIPAMENTO
+
+MINA 1:N POLÍGONO
+
+MINA 1:N LOCAÇÃO
+
+---
+
+# 5. Operador
+
+Representa o colaborador responsável pela operação de um equipamento.
+
+Informações principais:
+
+- id
+- mina_id
 - nome
 - matrícula
 - cartão
 - status
 
-Um operador pode operar equipamentos diferentes durante o turno.
+Regras:
 
-Não pode possuir duas operações simultâneas.
+- um operador pode operar equipamentos diferentes ao longo do turno;
+- um operador não pode operar dois equipamentos simultaneamente;
+- um equipamento pode permanecer sem operador;
+- a troca de operador pode ocorrer durante o turno;
+- o histórico das trocas deve ser preservado.
+
+Relacionamento:
+
+OPERADOR 1:N ALOCACAO_OPERADOR
 
 ---
 
-## 3. Equipamento
+# 6. Modelo de equipamento
 
-Representa caminhões, escavadeiras e demais equipamentos operacionais.
+Representa o modelo/tipo do equipamento.
 
 Informações principais:
 
 - id
-- código
 - nome
-- modelo
 - tipo
 - status
+
+Exemplos:
+
+- caminhão;
+- escavadeira;
+- carregadeira;
+- equipamento de apoio.
+
+Relacionamento:
+
+MODELO_EQUIPAMENTO 1:N EQUIPAMENTO
+
+---
+
+# 7. Equipamento
+
+Representa um equipamento físico da operação.
+
+Informações principais:
+
+- id
+- mina_id
+- modelo_id
+- código
+- nome
+- status
+- possui_balanca
+- bloqueado
 
 Um equipamento pode:
 
 - ficar sem operador;
 - receber operadores diferentes;
 - mudar de locação;
-- participar de várias viagens ao longo do tempo.
+- participar de várias viagens;
+- ser substituído por outro equipamento em uma locação.
+
+Regra fundamental:
+
+> Um equipamento não pode estar alocado simultaneamente em duas locações.
+
+Relacionamentos:
+
+EQUIPAMENTO 1:N ALOCACAO_EQUIPAMENTO
+
+EQUIPAMENTO 1:N ALOCACAO_OPERADOR
 
 ---
 
-## 4. Locação
-
-Representa a configuração operacional.
-
-Informações principais:
-
-- id
-- código
-- origem/frente
-- destino
-- status
-- data de início
-- data de fim
-
-Uma locação possui uma frente e um destino definidos.
-
-Um equipamento só pode possuir uma locação ativa simultaneamente.
-
----
-
-## 5. Alocação de equipamento
-
-Representa o histórico da permanência do equipamento em uma locação.
-
-Relacionamento:
-
-EQUIPAMENTO 1:N ALOCACAO_EQUIPAMENTO N:1 LOCACAO
-
-Informações principais:
-
-- id
-- equipamento_id
-- locacao_id
-- inicio
-- fim
-- status
-
----
-
-## 6. Alocação de operador
-
-Representa qual operador estava utilizando determinado equipamento.
-
-Relacionamento:
-
-OPERADOR 1:N ALOCACAO_OPERADOR N:1 EQUIPAMENTO
-
-Informações principais:
-
-- id
-- operador_id
-- equipamento_id
-- início
-- fim
-
-Essa entidade preserva o histórico de troca de operador.
-
----
-
-## 7. Viagem
-
-Representa um ciclo completo de transporte.
-
-Relacionamento principal:
-
-ALOCACAO_EQUIPAMENTO 1:N VIAGEM
-
-Informações principais:
-
-- id
-- equipamento_id
-- locacao_id
-- origem_id
-- destino_id
-- operador_id
-- massa
-- início
-- fim
-- status
-
-Cada viagem possui identificação única.
-
----
-
-## 8. Evento da viagem
-
-Representa cada etapa operacional.
-
-Relacionamento:
-
-VIAGEM 1:N EVENTO_VIAGEM
-
-Eventos possíveis inicialmente:
-
-- MOVIMENTANDO_VAZIO
-- CARREGANDO
-- MOVIMENTANDO_CHEIO
-- BASCULANDO
-
-Informações:
-
-- id
-- viagem_id
-- tipo_evento
-- data_hora
-- latitude
-- longitude
-- poligono_id
-
-O evento BASCULANDO encerra a viagem.
-
----
-
-## 9. Polígono
+# 8. Polígono
 
 Representa uma área geográfica operacional.
 
-Pode representar:
+Tipos principais:
 
-- frente de lavra;
-- destino;
-- outras áreas operacionais.
+- FRENTE
+- DESTINO
+- AREA_OPERACIONAL
 
-Informações:
+Exemplos:
+
+- Frente P12;
+- Frente P9;
+- Depósito de Estéril Cava A.
+
+Informações principais:
 
 - id
+- mina_id
 - nome
 - tipo
 - geometria
 - status
 
-Regra: polígonos operacionais não podem possuir sobreposição.
+A geometria será implementada utilizando PostGIS.
+
+Regras:
+
+- um apontamento deve ser associado ao polígono correspondente;
+- o sistema deve identificar quando o equipamento está dentro de um polígono;
+- o sistema deve identificar situações próximas à borda;
+- não podem existir polígonos operacionais incompatíveis ocupando a mesma área;
+- apontamento fora de qualquer polígono deve gerar erro ou entrar em contingência.
+
+Relacionamentos:
+
+POLÍGONO 1:N LOCAÇÃO
+
+POLÍGONO 1:N EVENTO_VIAGEM
 
 ---
 
-## 10. Estrutura inicial do relacionamento
+# 9. Locação
 
-OPERADOR
-    │
-    └──< ALOCACAO_OPERADOR >── EQUIPAMENTO
-                                      │
-                                      └──< ALOCACAO_EQUIPAMENTO >── LOCACAO
-                                                    │
-                                                    └──< VIAGEM
-                                                           │
-                                                           └──< EVENTO_VIAGEM
+Representa uma configuração operacional ativa.
 
-POLIGONO pode ser relacionado à:
+Uma locação define:
 
-- LOCACAO como origem ou destino;
-- EVENTO_VIAGEM para identificação geográfica.
+- uma frente de lavra/origem;
+- um destino.
 
----
+Informações principais:
 
-## 11. Próxima etapa
+- id
+- mina_id
+- origem_poligono_id
+- destino_poligono_id
+- início
+- fim
+- status
 
-Após validar este modelo, o próximo passo será:
+Exemplo:
 
-1. instalar/configurar PostgreSQL;
-2. criar o banco `fleetcontrol`;
-3. criar as tabelas;
-4. definir PKs e FKs;
-5. criar constraints para garantir as regras operacionais;
-6. versionar tudo no Git.
+```text
+LOCAÇÃO
+Frente P12
+     ↓
+Depósito de Estéril Cava A
