@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgis/postgis:16-3.4
+    container_name: fleetcontrol-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: fleetcontrol
+      POSTGRES_USER: fleetcontrol
+      POSTGRES_PASSWORD: fleetcontrol_dev
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - fleetcontrol_pgdata:/var/lib/postgresql/data
+
+volumes:
+  fleetcontrol_pgdata:
