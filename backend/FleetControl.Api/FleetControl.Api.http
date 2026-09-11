@@ -4,3 +4,11 @@ GET {{FleetControl.Api_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+POST {{FleetControl.Api_HostAddress}}/api/empresas
+Content-Type: application/json
+
+{
+  "nome": "FleetControl Mineração",
+  "ativo": true
+}
