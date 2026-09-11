@@ -25,4 +25,18 @@ public class EmpresasController : ControllerBase
 
         return Ok(empresas);
     }
+    [HttpPost]
+    public async Task<ActionResult<Empresa>> CriarEmpresa(Empresa empresa)
+    {
+        _context.Empresas.Add(empresa);
+
+        await _context.SaveChangesAsync();
+
+        return CreatedAtAction(
+            nameof(GetEmpresas),
+            new { id = empresa.Id },
+            empresa
+        );
+    }
+
 }
