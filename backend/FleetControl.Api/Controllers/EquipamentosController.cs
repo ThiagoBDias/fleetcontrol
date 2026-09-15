@@ -25,4 +25,18 @@ public class EquipamentosController : ControllerBase
 
         return Ok(equipamentos);
     }
+
+    [HttpPost]
+public async Task<ActionResult<Equipamento>> CriarEquipamento(Equipamento equipamento)
+{
+    _context.Equipamentos.Add(equipamento);
+
+    await _context.SaveChangesAsync();
+
+    return CreatedAtAction(
+        nameof(GetEquipamentos),
+        new { id = equipamento.Id },
+        equipamento
+    );
+}
 }
