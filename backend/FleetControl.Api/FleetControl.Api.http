@@ -1,6 +1,8 @@
 @FleetControl.Api_HostAddress = http://localhost:5246
 
-GET {{FleetControl.Api_HostAddress}}/weatherforecast/
+###
+
+GET {{FleetControl.Api_HostAddress}}/api/empresas
 Accept: application/json
 
 ###
@@ -12,3 +14,27 @@ Content-Type: application/json
   "nome": "FleetControl Mineração",
   "ativo": true
 }
+
+###
+
+GET {{FleetControl.Api_HostAddress}}/api/minas
+Accept: application/json
+
+### Criar mina
+POST http://localhost:5246/api/minas
+Content-Type: application/json
+
+{
+    "empresaId": 2,
+    "nome": "Mina FleetControl",
+    "codigo": "MINA-01",
+    "ativo": true
+}
+
+### Listar minas
+GET http://localhost:5246/api/minas
+Accept: application/json
+
+### Listar empresas
+GET http://localhost:5246/api/empresas
+Accept: application/json
