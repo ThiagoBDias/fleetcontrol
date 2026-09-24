@@ -38,3 +38,6 @@ Accept: application/json
 ### Listar empresas
 GET http://localhost:5246/api/empresas
 Accept: application/json
+
+### Listar modelos de equipamento
+GET http://localhost:5246/api/ModelosEquipamento

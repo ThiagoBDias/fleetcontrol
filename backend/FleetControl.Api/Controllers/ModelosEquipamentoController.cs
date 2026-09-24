@@ -15,4 +15,14 @@ public class ModelosEquipamentoController : ControllerBase
     {
         _context = context;
     }
+
+    [HttpGet]
+public async Task<ActionResult<IEnumerable<ModeloEquipamento>>> GetModelosEquipamento()
+{
+    var modelos = await _context.ModelosEquipamento
+        .AsNoTracking()
+        .ToListAsync();
+
+    return Ok(modelos);
+}
 }
