@@ -25,4 +25,18 @@ public async Task<ActionResult<IEnumerable<ModeloEquipamento>>> GetModelosEquipa
 
     return Ok(modelos);
 }
+
+[HttpPost]
+public async Task<ActionResult<ModeloEquipamento>> CriarModelo(ModeloEquipamento modelo)
+{
+    _context.ModelosEquipamento.Add(modelo);
+
+    await _context.SaveChangesAsync();
+
+    return CreatedAtAction(
+        nameof(GetModelosEquipamento),
+        new { id = modelo.Id },
+        modelo
+    );
+}
 }
