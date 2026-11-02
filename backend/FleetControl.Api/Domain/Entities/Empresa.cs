@@ -9,4 +9,6 @@ public class Empresa
     public bool Ativo { get; set; } = true;
 
     public DateTime CriadoEm { get; set; }
+
+    public ICollection<Mina> Minas { get; set; } = new List<Mina>();
 }

@@ -19,4 +19,9 @@ public class Equipamento
     public bool Bloqueado { get; set; }
 
     public DateTime CriadoEm { get; set; }
+
+    public Mina Mina { get; set; } = null!;
+
+    public ModeloEquipamento Modelo { get; set; } = null!;
 }
+

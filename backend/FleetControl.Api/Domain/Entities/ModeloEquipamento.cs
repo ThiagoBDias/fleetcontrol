@@ -9,4 +9,6 @@ public class ModeloEquipamento
     public string Tipo { get; set; } = string.Empty;
 
     public bool Ativo { get; set; } = true;
+
+    public ICollection<Equipamento> Equipamentos { get; set; } = new List<Equipamento>();
 }

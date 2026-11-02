@@ -13,4 +13,7 @@ public class Mina
     public bool Ativo { get; set; } = true;
 
     public DateTime CriadoEm { get; set; }
+
+    public Empresa Empresa { get; set; } = null!;
+    
 }
