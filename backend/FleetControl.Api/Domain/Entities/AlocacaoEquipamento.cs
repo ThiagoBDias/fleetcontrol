@@ -17,4 +17,11 @@ public class AlocacaoEquipamento
     public string? MotivoSaida { get; set; }
 
     public DateTime CriadoEm { get; set; }
+
+    // Relacionamentos
+    public Locacao Locacao { get; set; } = null!;
+
+    public Equipamento Equipamento { get; set; } = null!;
+
+    public ICollection<Viagem> Viagens { get; set; } = new List<Viagem>();
 }

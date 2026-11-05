@@ -15,4 +15,11 @@ public class Operador
     public string Status { get; set; } = "ATIVO";
 
     public DateTime CriadoEm { get; set; }
+
+    // Relacionamentos
+    public Mina Mina { get; set; } = null!;
+
+    public ICollection<AlocacaoOperador> Alocacoes { get; set; } = new List<AlocacaoOperador>();
+
+    public ICollection<EventoViagem> EventosViagem { get; set; } = new List<EventoViagem>();
 }

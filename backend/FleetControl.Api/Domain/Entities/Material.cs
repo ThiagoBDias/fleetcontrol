@@ -11,4 +11,9 @@ public class Material
     public bool Ativo { get; set; } = true;
 
     public DateTime CriadoEm { get; set; }
+
+    // Relacionamentos
+    public Mina Mina { get; set; } = null!;
+
+    public ICollection<Litologia> Litologias { get; set; } = new List<Litologia>();
 }

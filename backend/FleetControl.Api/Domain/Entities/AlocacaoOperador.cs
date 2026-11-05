@@ -15,4 +15,9 @@ public class AlocacaoOperador
     public string? MotivoSaida { get; set; }
 
     public DateTime CriadoEm { get; set; }
+
+    // Relacionamentos
+    public Operador Operador { get; set; } = null!;
+
+    public Equipamento Equipamento { get; set; } = null!;
 }

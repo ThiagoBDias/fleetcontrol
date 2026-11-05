@@ -19,4 +19,15 @@ public class Locacao
     public string Status { get; set; } = "ATIVA";
 
     public DateTime CriadoEm { get; set; }
+
+    // Relacionamentos
+    public Mina Mina { get; set; } = null!;
+
+    public Poligono OrigemPoligono { get; set; } = null!;
+
+    public Poligono DestinoPoligono { get; set; } = null!;
+
+    public ICollection<AlocacaoEquipamento> AlocacoesEquipamentos { get; set; } = new List<AlocacaoEquipamento>();
+
+    public ICollection<Viagem> Viagens { get; set; } = new List<Viagem>();
 }

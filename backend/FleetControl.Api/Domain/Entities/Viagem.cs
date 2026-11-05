@@ -25,4 +25,19 @@ public class Viagem
     public string Status { get; set; } = "EM_ANDAMENTO";
 
     public DateTime CriadoEm { get; set; }
+
+    // Relacionamentos
+    public Locacao Locacao { get; set; } = null!;
+
+    public AlocacaoEquipamento AlocacaoEquipamento { get; set; } = null!;
+
+    public Poligono OrigemPoligono { get; set; } = null!;
+
+    public Poligono DestinoPoligono { get; set; } = null!;
+
+    public Litologia? Litologia { get; set; }
+
+    public Equipamento? EquipamentoCarga { get; set; }
+
+    public ICollection<EventoViagem> Eventos { get; set; } = new List<EventoViagem>();
 }

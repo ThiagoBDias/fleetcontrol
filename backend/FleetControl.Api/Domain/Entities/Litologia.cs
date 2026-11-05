@@ -15,4 +15,11 @@ public class Litologia
     public bool Ativo { get; set; } = true;
 
     public DateTime CriadoEm { get; set; }
+
+    // Relacionamentos
+    public Mina Mina { get; set; } = null!;
+
+    public Material Material { get; set; } = null!;
+
+    public ICollection<Viagem> Viagens { get; set; } = new List<Viagem>();
 }

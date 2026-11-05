@@ -23,4 +23,13 @@ public class EventoViagem
     public string? Observacao { get; set; }
 
     public DateTime CriadoEm { get; set; }
+
+    // Relacionamentos
+    public Viagem Viagem { get; set; } = null!;
+
+    public Poligono? Poligono { get; set; }
+
+    public Operador? Operador { get; set; }
+
+    public Equipamento? Equipamento { get; set; }
 }
