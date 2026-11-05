@@ -2,6 +2,8 @@ namespace FleetControl.Api.Domain.Entities;
 
 public class Viagem
 {
+    public long Id { get; set; }
+
     public Guid Codigo { get; set; }
 
     public long LocacaoId { get; set; }
@@ -16,7 +18,7 @@ public class Viagem
 
     public long? EquipamentoCargaId { get; set; }
 
-    public decimal Massa { get; set; }
+    public decimal? Massa { get; set; }
 
     public DateTime Inicio { get; set; }
 

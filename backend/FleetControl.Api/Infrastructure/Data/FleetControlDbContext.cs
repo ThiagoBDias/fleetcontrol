@@ -94,6 +94,14 @@ public DbSet<EventoViagem> EventosViagem => Set<EventoViagem>();
 
             entity.Property(e => e.CriadoEm)
                 .HasColumnName("criado_em");
+            entity.HasIndex(e => new { e.EmpresaId, e.Codigo })
+    .IsUnique();
+
+entity.HasAlternateKey(e => new
+{
+    e.Id,
+    e.EmpresaId
+});
         });
 
         // EMPRESA
@@ -275,9 +283,9 @@ modelBuilder.Entity<Litologia>(entity =>
         .HasMaxLength(150)
         .IsRequired();
 
-    entity.Property(e => e.Tipo)
-        .HasColumnName("tipo")
-        .HasMaxLength(50);
+  entity.Property(e => e.Tipo)
+    .HasColumnName("tipo")
+    .HasMaxLength(100);
 
     entity.Property(e => e.Ativo)
         .HasColumnName("ativo")
@@ -340,6 +348,96 @@ modelBuilder.Entity<Locacao>(entity =>
         e.DestinoPoligonoId
     });
 });
+// ALOCACAO DE EQUIPAMENTO
+modelBuilder.Entity<AlocacaoEquipamento>(entity =>
+{
+    entity.ToTable("alocacao_equipamento");
+
+    entity.HasKey(e => e.Id);
+
+    entity.Property(e => e.Id)
+        .HasColumnName("id");
+
+    entity.Property(e => e.LocacaoId)
+        .HasColumnName("locacao_id");
+
+    entity.Property(e => e.EquipamentoId)
+        .HasColumnName("equipamento_id");
+
+    entity.Property(e => e.Funcao)
+        .HasColumnName("funcao")
+        .HasMaxLength(20)
+        .IsRequired();
+
+    entity.Property(e => e.Inicio)
+        .HasColumnName("inicio");
+
+    entity.Property(e => e.Fim)
+        .HasColumnName("fim");
+
+    entity.Property(e => e.MotivoSaida)
+        .HasColumnName("motivo_saida")
+        .HasColumnType("text");
+
+    entity.Property(e => e.CriadoEm)
+        .HasColumnName("criado_em");
+
+    entity.HasAlternateKey(e => new
+    {
+        e.Id,
+        e.LocacaoId
+    });
+
+    entity.HasIndex(e => e.EquipamentoId);
+
+    entity.HasIndex(e => e.LocacaoId);
+
+    entity.HasIndex(e => new
+    {
+        e.Inicio,
+        e.Fim
+    });
+});
+// ALOCACAO DE OPERADOR
+modelBuilder.Entity<AlocacaoOperador>(entity =>
+{
+    entity.ToTable("alocacao_operador");
+
+    entity.HasKey(e => e.Id);
+
+    entity.Property(e => e.Id)
+        .HasColumnName("id");
+
+    entity.Property(e => e.OperadorId)
+        .HasColumnName("operador_id");
+
+    entity.Property(e => e.EquipamentoId)
+        .HasColumnName("equipamento_id");
+
+    entity.Property(e => e.Inicio)
+        .HasColumnName("inicio");
+
+    entity.Property(e => e.Fim)
+        .HasColumnName("fim");
+
+    entity.Property(e => e.MotivoSaida)
+        .HasColumnName("motivo_saida")
+        .HasColumnType("text");
+
+    entity.Property(e => e.CriadoEm)
+        .HasColumnName("criado_em");
+
+    entity.HasIndex(e => e.OperadorId);
+
+    entity.HasIndex(e => e.EquipamentoId);
+
+    entity.HasIndex(e => new
+    {
+        e.Inicio,
+        e.Fim
+    });
+});
+
 
     }
 }
