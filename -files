@@ -1,0 +1,28 @@
+[33mf7200e9[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Configurations
+[33m552e085[m Add ao DBCONTEXT
+[33m78b06d9[m Add Relacionamentos
+[33m04211a9[m upgrade
+[33m5d17d86[m Update FleetControl.Api.csproj
+[33mb9f050c[m Update ModelosEquipamentoController.cs
+[33mfb8f04b[m  Implementar GET
+[33m6d7d3ac[m Update ModelosEquipamentoController.cs
+[33mb615081[m Create ModelosEquipamentoController.cs
+[33meab3550[m Update README.md
+[33m6ec70fd[m feat: add company mine and equipment model persistence
+[33meea18d2[m Update EquipamentosController.cs
+[33m98f85fc[m Update FleetControl.Api.http
+[33m9f3f87e[m Update EmpresasController.cs
+[33mda3a1f1[m updatte
+[33m3ad5d1a[m Create Mina.cs
+[33m7e90385[m Update README.md
+[33m0bf68d4[m Update README.md
+[33m5a1dbf6[m Create EquipamentosController.cs
+[33me08d290[m feat: conecta API ao PostgreSQL
+[33m9daab3e[m feat: adiciona Entity Framework Core
+[33m822ebcf[m feat: cria estrutura inicial da API FleetControl
+[33mda6c30b[m feat: estrutura inicial do banco FleetControl
+[33ma21deee[m Create docker-compose.yml
+[33m7bd9e00[m Update modelo-dados.md
+[33m59641a9[m database
+[33m017462a[m docs: adiciona regras de integridade operacional
+[33m1b0d7fd[m Initial commit
