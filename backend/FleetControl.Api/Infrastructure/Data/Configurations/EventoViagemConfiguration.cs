@@ -58,5 +58,31 @@ public class EventoViagemConfiguration
         entity.HasIndex(e => e.PoligonoId);
         entity.HasIndex(e => e.OperadorId);
         entity.HasIndex(e => e.EquipamentoId);
+
+
+        // Relacionamento com Viagem
+        entity.HasOne(e => e.Viagem)
+            .WithMany(e => e.Eventos)
+            .HasForeignKey(e => e.ViagemId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        // Relacionamento com Polígono
+        entity.HasOne(e => e.Poligono)
+            .WithMany(e => e.EventosViagem)
+            .HasForeignKey(e => e.PoligonoId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        // Relacionamento com Operador
+        entity.HasOne(e => e.Operador)
+            .WithMany(e => e.EventosViagem)
+            .HasForeignKey(e => e.OperadorId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        // Relacionamento com Equipamento
+        entity.HasOne(e => e.Equipamento)
+            .WithMany(e => e.EventosViagem)
+            .HasForeignKey(e => e.EquipamentoId)
+            .OnDelete(DeleteBehavior.NoAction);
+
     }
 }

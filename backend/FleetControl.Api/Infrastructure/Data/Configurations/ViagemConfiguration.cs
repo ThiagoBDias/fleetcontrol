@@ -63,5 +63,64 @@ public class ViagemConfiguration : IEntityTypeConfiguration<Viagem>
         // Código UUID único
         entity.HasIndex(e => e.Codigo)
             .IsUnique();
+
+
+        // Relacionamento com Locação
+        entity.HasOne(e => e.Locacao)
+            .WithMany(e => e.Viagens)
+            .HasForeignKey(e => new
+            {
+                e.LocacaoId,
+                e.OrigemPoligonoId,
+                e.DestinoPoligonoId
+            })
+            .HasPrincipalKey(e => new
+            {
+                e.Id,
+                e.OrigemPoligonoId,
+                e.DestinoPoligonoId
+            })
+            .OnDelete(DeleteBehavior.NoAction);
+
+        // Relacionamento com Alocação de Equipamento
+        entity.HasOne(e => e.AlocacaoEquipamento)
+            .WithMany(e => e.Viagens)
+            .HasForeignKey(e => new
+            {
+                e.AlocacaoEquipamentoId,
+                e.LocacaoId
+            })
+            .HasPrincipalKey(e => new
+            {
+                e.Id,
+                e.LocacaoId
+            })
+            .OnDelete(DeleteBehavior.NoAction);
+
+        // Relacionamento com Polígono de Origem
+        entity.HasOne(e => e.OrigemPoligono)
+            .WithMany()
+            .HasForeignKey(e => e.OrigemPoligonoId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        // Relacionamento com Polígono de Destino
+        entity.HasOne(e => e.DestinoPoligono)
+            .WithMany()
+            .HasForeignKey(e => e.DestinoPoligonoId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        // Relacionamento com Litologia
+        entity.HasOne(e => e.Litologia)
+            .WithMany(e => e.Viagens)
+            .HasForeignKey(e => e.LitologiaId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        // Relacionamento com Equipamento de Carga
+        entity.HasOne(e => e.EquipamentoCarga)
+            .WithMany(e => e.Viagens)
+            .HasForeignKey(e => e.EquipamentoCargaId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+
     }
 }

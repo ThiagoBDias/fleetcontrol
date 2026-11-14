@@ -42,17 +42,17 @@ public class AlocacaoOperadorConfiguration
         entity.HasIndex(e => e.EquipamentoId);
 
 
-// Relacionamento com Operador
-entity.HasOne(e => e.Operador)
-    .WithMany(e => e.Alocacoes)
-    .HasForeignKey(e => e.OperadorId)
-    .OnDelete(DeleteBehavior.NoAction);
+        // Relacionamento com Operador
+        entity.HasOne(e => e.Operador)
+            .WithMany(e => e.Alocacoes)
+            .HasForeignKey(e => e.OperadorId)
+            .OnDelete(DeleteBehavior.NoAction);
 
-// Relacionamento com Equipamento
-entity.HasOne(e => e.Equipamento)
-    .WithMany(e => e.AlocacoesOperadores)
-    .HasForeignKey(e => e.EquipamentoId)
-    .OnDelete(DeleteBehavior.NoAction);
+        // Relacionamento com Equipamento
+        entity.HasOne(e => e.Equipamento)
+            .WithMany(e => e.AlocacoesOperadores)
+            .HasForeignKey(e => e.EquipamentoId)
+            .OnDelete(DeleteBehavior.NoAction);
 
     }
 }

@@ -54,9 +54,9 @@ public class PoligonoConfiguration : IEntityTypeConfiguration<Poligono>
             .HasMethod("GIST");
 
         // Relacionamento com Mina
-entity.HasOne(e => e.Mina)
-    .WithMany(e => e.Poligonos)
-    .HasForeignKey(e => e.MinaId)
-    .OnDelete(DeleteBehavior.NoAction);
+        entity.HasOne(e => e.Mina)
+            .WithMany(e => e.Poligonos)
+            .HasForeignKey(e => e.MinaId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }

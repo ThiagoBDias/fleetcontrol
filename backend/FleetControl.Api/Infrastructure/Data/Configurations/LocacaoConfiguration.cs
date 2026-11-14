@@ -58,5 +58,43 @@ public class LocacaoConfiguration : IEntityTypeConfiguration<Locacao>
             e.OrigemPoligonoId,
             e.DestinoPoligonoId
         });
+
+
+        // Relacionamento com Mina
+        entity.HasOne(e => e.Mina)
+            .WithMany(e => e.Locacoes)
+            .HasForeignKey(e => e.MinaId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        // Relacionamento com Polígono de Origem
+        entity.HasOne(e => e.OrigemPoligono)
+            .WithMany(e => e.LocacoesOrigem)
+            .HasForeignKey(e => new
+            {
+                e.OrigemPoligonoId,
+                e.MinaId
+            })
+            .HasPrincipalKey(e => new
+            {
+                e.Id,
+                e.MinaId
+            })
+            .OnDelete(DeleteBehavior.NoAction);
+
+        // Relacionamento com Polígono de Destino
+        entity.HasOne(e => e.DestinoPoligono)
+            .WithMany(e => e.LocacoesDestino)
+            .HasForeignKey(e => new
+            {
+                e.DestinoPoligonoId,
+                e.MinaId
+            })
+            .HasPrincipalKey(e => new
+            {
+                e.Id,
+                e.MinaId
+            })
+            .OnDelete(DeleteBehavior.NoAction);
+
     }
 }
