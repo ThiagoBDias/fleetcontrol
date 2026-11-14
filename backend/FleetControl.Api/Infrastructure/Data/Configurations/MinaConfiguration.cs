@@ -48,5 +48,11 @@ public class MinaConfiguration : IEntityTypeConfiguration<Mina>
             e.Id,
             e.EmpresaId
         });
+        // Relacionamentos
+        entity.HasOne(e => e.Empresa)
+            .WithMany(e => e.Minas)
+            .HasForeignKey(e => e.EmpresaId)
+            .OnDelete(DeleteBehavior.NoAction);
+
     }
 }

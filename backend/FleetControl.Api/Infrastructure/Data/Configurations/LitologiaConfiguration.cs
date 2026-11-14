@@ -50,5 +50,20 @@ public class LitologiaConfiguration : IEntityTypeConfiguration<Litologia>
             e.Id,
             e.MinaId
         });
+
+
+        // Relacionamento com Mina
+        entity.HasOne(e => e.Mina)
+            .WithMany(e => e.Litologias)
+            .HasForeignKey(e => e.MinaId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        // Relacionamento com Material
+        entity.HasOne(e => e.Material)
+            .WithMany(e => e.Litologias)
+            .HasForeignKey(e => e.MaterialId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+
     }
 }

@@ -43,6 +43,12 @@ public class MaterialConfiguration : IEntityTypeConfiguration<Material>
             e.Id,
             e.MinaId
         });
+
+        // Relacionamento com Mina
+        entity.HasOne(e => e.Mina)
+            .WithMany(e => e.Materiais)
+            .HasForeignKey(e => e.MinaId)
+            .OnDelete(DeleteBehavior.NoAction);
     }
 }
 

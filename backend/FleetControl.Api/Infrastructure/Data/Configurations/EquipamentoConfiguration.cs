@@ -62,5 +62,19 @@ public class EquipamentoConfiguration
             e.Id,
             e.MinaId
         });
+
+
+        // Relacionamento com Mina
+        entity.HasOne(e => e.Mina)
+            .WithMany(e => e.Equipamentos)
+            .HasForeignKey(e => e.MinaId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        // Relacionamento com Modelo de Equipamento
+        entity.HasOne(e => e.Modelo)
+            .WithMany(e => e.Equipamentos)
+            .HasForeignKey(e => e.ModeloId)
+            .OnDelete(DeleteBehavior.NoAction);
+
     }
 }

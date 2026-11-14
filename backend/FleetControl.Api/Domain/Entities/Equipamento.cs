@@ -20,8 +20,17 @@ public class Equipamento
 
     public DateTime CriadoEm { get; set; }
 
+    // Relacionamentos principais
     public Mina Mina { get; set; } = null!;
 
     public ModeloEquipamento Modelo { get; set; } = null!;
-}
 
+    // Relacionamentos operacionais
+    public ICollection<AlocacaoEquipamento> Alocacoes { get; set; } = new List<AlocacaoEquipamento>();
+
+    public ICollection<AlocacaoOperador> AlocacoesOperadores { get; set; } = new List<AlocacaoOperador>();
+
+    public ICollection<Viagem> Viagens { get; set; } = new List<Viagem>();
+
+    public ICollection<EventoViagem> EventosViagem { get; set; } = new List<EventoViagem>();
+}

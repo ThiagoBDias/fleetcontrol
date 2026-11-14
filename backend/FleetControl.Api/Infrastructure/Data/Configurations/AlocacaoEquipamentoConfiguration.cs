@@ -52,6 +52,17 @@ public class AlocacaoEquipamentoConfiguration
         entity.HasIndex(e => e.EquipamentoId);
         entity.HasIndex(e => e.LocacaoId);
 
-        entity.HasIndex(e => new { e.Inicio, e.Fim });
+        // Relacionamento com Locação
+        entity.HasOne(e => e.Locacao)
+            .WithMany(e => e.AlocacoesEquipamentos)
+            .HasForeignKey(e => e.LocacaoId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        // Relacionamento com Equipamento
+        entity.HasOne(e => e.Equipamento)
+            .WithMany(e => e.Alocacoes)
+            .HasForeignKey(e => e.EquipamentoId)
+            .OnDelete(DeleteBehavior.NoAction);
+
     }
 }
