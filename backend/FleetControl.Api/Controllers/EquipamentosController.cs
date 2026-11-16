@@ -1,9 +1,9 @@
-
 using FleetControl.Api.Application.DTOs.Equipamentos;
 using FleetControl.Api.Domain.Entities;
 using FleetControl.Api.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace FleetControl.Api.Controllers;
 
@@ -73,11 +73,43 @@ public class EquipamentosController : ControllerBase
     public async Task<ActionResult<EquipamentoResponse>> CriarEquipamento(
         CriarEquipamentoRequest request)
     {
+        var codigo = request.Codigo.Trim();
+
+
+        // Verificar se a mina existe
+        var minaExiste = await _context.Minas
+            .AnyAsync(m => m.Id == request.MinaId);
+
+        if (!minaExiste)
+        {
+            return BadRequest("Mina não encontrada.");
+        }
+
+        // Verificar se o modelo existe
+        var modeloExiste = await _context.ModelosEquipamento
+            .AnyAsync(m => m.Id == request.ModeloId);
+
+        if (!modeloExiste)
+        {
+            return BadRequest("Modelo de equipamento não encontrado.");
+        }
+
+
+        var equipamentoExiste = await _context.Equipamentos
+            .AnyAsync(e =>
+                e.MinaId == request.MinaId &&
+                e.Codigo == codigo);
+
+        if (equipamentoExiste)
+        {
+            return Conflict(
+                "Já existe um equipamento com esse código nesta mina.");
+        }
         var equipamento = new Equipamento
         {
             MinaId = request.MinaId,
             ModeloId = request.ModeloId,
-            Codigo = request.Codigo,
+            Codigo = codigo,
             Nome = request.Nome,
             PossuiBalanca = request.PossuiBalanca,
             Status = "ATIVO",
@@ -87,7 +119,17 @@ public class EquipamentosController : ControllerBase
 
         _context.Equipamentos.Add(equipamento);
 
-        await _context.SaveChangesAsync();
+        try
+        {
+            await _context.SaveChangesAsync();
+        }
+        catch (DbUpdateException ex) when (
+            ex.InnerException is PostgresException postgresEx &&
+            postgresEx.SqlState == PostgresErrorCodes.UniqueViolation)
+        {
+            return Conflict(
+                "Já existe um equipamento com esse código nesta mina.");
+        }
 
         var response = new EquipamentoResponse
         {
