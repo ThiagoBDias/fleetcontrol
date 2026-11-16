@@ -3,7 +3,6 @@ using FleetControl.Api.Domain.Entities;
 using FleetControl.Api.Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Npgsql;
 
 namespace FleetControl.Api.Controllers;
 
@@ -75,7 +74,6 @@ public class EquipamentosController : ControllerBase
     {
         var codigo = request.Codigo.Trim();
 
-
         // Verificar se a mina existe
         var minaExiste = await _context.Minas
             .AnyAsync(m => m.Id == request.MinaId);
@@ -94,7 +92,7 @@ public class EquipamentosController : ControllerBase
             return BadRequest("Modelo de equipamento não encontrado.");
         }
 
-
+        // Verificar duplicidade
         var equipamentoExiste = await _context.Equipamentos
             .AnyAsync(e =>
                 e.MinaId == request.MinaId &&
@@ -105,6 +103,7 @@ public class EquipamentosController : ControllerBase
             return Conflict(
                 "Já existe um equipamento com esse código nesta mina.");
         }
+
         var equipamento = new Equipamento
         {
             MinaId = request.MinaId,
@@ -119,17 +118,7 @@ public class EquipamentosController : ControllerBase
 
         _context.Equipamentos.Add(equipamento);
 
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateException ex) when (
-            ex.InnerException is PostgresException postgresEx &&
-            postgresEx.SqlState == PostgresErrorCodes.UniqueViolation)
-        {
-            return Conflict(
-                "Já existe um equipamento com esse código nesta mina.");
-        }
+        await _context.SaveChangesAsync();
 
         var response = new EquipamentoResponse
         {

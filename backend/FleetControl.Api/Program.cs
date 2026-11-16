@@ -1,29 +1,43 @@
- using FleetControl.Api.Infrastructure.Data;
- using Microsoft.EntityFrameworkCore;
+
+using FleetControl.Api.Infrastructure.Data;
+using FleetControl.Api.ExceptionHandlers;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// Controllers
 builder.Services.AddControllers();
+
+// Tratamento global de exceções
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
+
+// PostgreSQL e PostGIS
 builder.Services.AddDbContext<FleetControlDbContext>(options =>
+{
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
         npgsqlOptions => npgsqlOptions.UseNetTopologySuite()
-    )
-);
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+    );
+});
+
+// OpenAPI
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+// Tratamento global de exceções
+app.UseExceptionHandler();
+
+// Teste de conexão com o banco
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<FleetControlDbContext>();
+    var db = scope.ServiceProvider
+        .GetRequiredService<FleetControlDbContext>();
+
     Console.WriteLine($"Banco conectado: {db.Database.CanConnect()}");
 }
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
