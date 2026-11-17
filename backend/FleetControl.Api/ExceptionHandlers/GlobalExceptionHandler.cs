@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using FleetControl.Api.Application.Exceptions;
 using Npgsql;
 
 namespace FleetControl.Api.ExceptionHandlers;
@@ -25,7 +26,21 @@ public class GlobalExceptionHandler : IExceptionHandler
         var title = "Erro interno do servidor";
         var detail = "Ocorreu um erro inesperado.";
 
-        if (exception is DbUpdateException dbException &&
+        // Exceções da camada Application
+        if (exception is BusinessRuleException)
+        {
+            statusCode = StatusCodes.Status400BadRequest;
+            title = "Regra de negócio violada";
+            detail = exception.Message;
+        }
+        else if (exception is ConflictException)
+        {
+            statusCode = StatusCodes.Status409Conflict;
+            title = "Conflito de registros";
+            detail = exception.Message;
+        }
+
+        else if (exception is DbUpdateException dbException &&
             dbException.InnerException is PostgresException postgresException)
         {
             switch (postgresException.SqlState)

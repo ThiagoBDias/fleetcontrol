@@ -2,11 +2,16 @@
 using FleetControl.Api.Infrastructure.Data;
 using FleetControl.Api.ExceptionHandlers;
 using Microsoft.EntityFrameworkCore;
+using FleetControl.Api.Application.Interfaces;
+using FleetControl.Api.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Controllers
 builder.Services.AddControllers();
+
+// Application Services
+builder.Services.AddScoped<IEquipamentoService, EquipamentoService>();
 
 // Tratamento global de exceções
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
