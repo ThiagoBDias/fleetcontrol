@@ -12,8 +12,10 @@ public class AlocacaoEquipamentoConfiguration
     {
         entity.ToTable("alocacao_equipamento");
 
+        // Chave primária
         entity.HasKey(e => e.Id);
 
+        // Propriedades
         entity.Property(e => e.Id)
             .HasColumnName("id");
 
@@ -29,7 +31,8 @@ public class AlocacaoEquipamentoConfiguration
             .IsRequired();
 
         entity.Property(e => e.Inicio)
-            .HasColumnName("inicio");
+            .HasColumnName("inicio")
+            .HasDefaultValueSql("NOW()");
 
         entity.Property(e => e.Fim)
             .HasColumnName("fim");
@@ -49,8 +52,15 @@ public class AlocacaoEquipamentoConfiguration
             e.LocacaoId
         });
 
-        entity.HasIndex(e => e.EquipamentoId);
-        entity.HasIndex(e => e.LocacaoId);
+        // Índices
+        entity.HasIndex(e => e.EquipamentoId)
+            .HasDatabaseName("idx_alocacao_equipamento_equipamento");
+
+        entity.HasIndex(e => e.LocacaoId)
+            .HasDatabaseName("idx_alocacao_equipamento_locacao");
+
+        entity.HasIndex(e => new { e.Inicio, e.Fim })
+            .HasDatabaseName("idx_alocacao_equipamento_periodo");
 
         // Relacionamento com Locação
         entity.HasOne(e => e.Locacao)
@@ -63,6 +73,5 @@ public class AlocacaoEquipamentoConfiguration
             .WithMany(e => e.Alocacoes)
             .HasForeignKey(e => e.EquipamentoId)
             .OnDelete(DeleteBehavior.NoAction);
-
     }
 }

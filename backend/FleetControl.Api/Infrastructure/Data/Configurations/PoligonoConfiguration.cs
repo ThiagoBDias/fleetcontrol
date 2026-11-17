@@ -5,14 +5,17 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace FleetControl.Api.Infrastructure.Data.Configurations;
 
-public class PoligonoConfiguration : IEntityTypeConfiguration<Poligono>
+public class PoligonoConfiguration
+    : IEntityTypeConfiguration<Poligono>
 {
     public void Configure(EntityTypeBuilder<Poligono> entity)
     {
         entity.ToTable("poligono");
 
+        // Chave primária
         entity.HasKey(e => e.Id);
 
+        // Propriedades
         entity.Property(e => e.Id)
             .HasColumnName("id");
 
@@ -43,15 +46,21 @@ public class PoligonoConfiguration : IEntityTypeConfiguration<Poligono>
             .HasColumnName("criado_em")
             .HasDefaultValueSql("NOW()");
 
-        // Chave alternativa para relacionamentos compostos
+        // Chave alternativa
         entity.HasAlternateKey(e => new
         {
             e.Id,
             e.MinaId
         });
+
         // Índice espacial PostGIS
         entity.HasIndex(e => e.Geometria)
-            .HasMethod("GIST");
+            .HasMethod("GIST")
+            .HasDatabaseName("idx_poligono_geometria");
+
+        // Índice composto por mina e tipo
+        entity.HasIndex(e => new { e.MinaId, e.Tipo })
+            .HasDatabaseName("idx_poligono_mina_tipo");
 
         // Relacionamento com Mina
         entity.HasOne(e => e.Mina)

@@ -12,8 +12,10 @@ public class AlocacaoOperadorConfiguration
     {
         entity.ToTable("alocacao_operador");
 
+        // Chave primária
         entity.HasKey(e => e.Id);
 
+        // Propriedades
         entity.Property(e => e.Id)
             .HasColumnName("id");
 
@@ -24,7 +26,8 @@ public class AlocacaoOperadorConfiguration
             .HasColumnName("equipamento_id");
 
         entity.Property(e => e.Inicio)
-            .HasColumnName("inicio");
+            .HasColumnName("inicio")
+            .HasDefaultValueSql("NOW()");
 
         entity.Property(e => e.Fim)
             .HasColumnName("fim");
@@ -37,10 +40,12 @@ public class AlocacaoOperadorConfiguration
             .HasColumnName("criado_em")
             .HasDefaultValueSql("NOW()");
 
-        entity.HasIndex(e => e.OperadorId);
+        // Índices
+        entity.HasIndex(e => e.OperadorId)
+            .HasDatabaseName("idx_alocacao_operador_operador");
 
-        entity.HasIndex(e => e.EquipamentoId);
-
+        entity.HasIndex(e => e.EquipamentoId)
+            .HasDatabaseName("idx_alocacao_operador_equipamento");
 
         // Relacionamento com Operador
         entity.HasOne(e => e.Operador)
@@ -53,6 +58,5 @@ public class AlocacaoOperadorConfiguration
             .WithMany(e => e.AlocacoesOperadores)
             .HasForeignKey(e => e.EquipamentoId)
             .OnDelete(DeleteBehavior.NoAction);
-
     }
 }
