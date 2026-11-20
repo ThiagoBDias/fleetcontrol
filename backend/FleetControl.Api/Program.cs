@@ -6,6 +6,7 @@ using FleetControl.Api.Application.Interfaces;
 using FleetControl.Api.Application.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
 // Controllers
 builder.Services.AddControllers();
 
