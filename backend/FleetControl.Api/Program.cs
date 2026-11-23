@@ -10,7 +10,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Controllers
 builder.Services.AddControllers();
 
-
 // Application Services
 builder.Services.AddScoped<IEquipamentoService, EquipamentoService>();
 builder.Services.AddScoped<IEmpresaService, EmpresaService>();
