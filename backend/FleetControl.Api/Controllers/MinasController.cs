@@ -1,9 +1,7 @@
 
 using FleetControl.Api.Application.DTOs.Minas;
-using FleetControl.Api.Domain.Entities;
-using FleetControl.Api.Infrastructure.Data;
+using FleetControl.Api.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace FleetControl.Api.Controllers;
 
@@ -11,29 +9,18 @@ namespace FleetControl.Api.Controllers;
 [Route("api/[controller]")]
 public class MinasController : ControllerBase
 {
-    private readonly FleetControlDbContext _context;
+    private readonly IMinaService _service;
 
-    public MinasController(FleetControlDbContext context)
+    public MinasController(IMinaService service)
     {
-        _context = context;
+        _service = service;
     }
 
     // GET: api/minas
     [HttpGet]
     public async Task<ActionResult<IEnumerable<MinaResponse>>> GetMinas()
     {
-        var minas = await _context.Minas
-            .AsNoTracking()
-            .Select(m => new MinaResponse
-            {
-                Id = m.Id,
-                EmpresaId = m.EmpresaId,
-                Nome = m.Nome,
-                Codigo = m.Codigo,
-                Ativo = m.Ativo,
-                CriadoEm = m.CriadoEm
-            })
-            .ToListAsync();
+        var minas = await _service.ListarAsync();
 
         return Ok(minas);
     }
@@ -42,19 +29,7 @@ public class MinasController : ControllerBase
     [HttpGet("{id:long}")]
     public async Task<ActionResult<MinaResponse>> GetMina(long id)
     {
-        var mina = await _context.Minas
-            .AsNoTracking()
-            .Where(m => m.Id == id)
-            .Select(m => new MinaResponse
-            {
-                Id = m.Id,
-                EmpresaId = m.EmpresaId,
-                Nome = m.Nome,
-                Codigo = m.Codigo,
-                Ativo = m.Ativo,
-                CriadoEm = m.CriadoEm
-            })
-            .FirstOrDefaultAsync();
+        var mina = await _service.BuscarPorIdAsync(id);
 
         if (mina is null)
             return NotFound();
@@ -67,38 +42,11 @@ public class MinasController : ControllerBase
     public async Task<ActionResult<MinaResponse>> CriarMina(
         CriarMinaRequest request)
     {
-        var empresaExiste = await _context.Empresas
-            .AnyAsync(e => e.Id == request.EmpresaId);
-
-        if (!empresaExiste)
-            return BadRequest("Empresa não encontrada.");
-
-        var mina = new Mina
-        {
-            EmpresaId = request.EmpresaId,
-            Nome = request.Nome.Trim(),
-            Codigo = request.Codigo?.Trim(),
-            Ativo = true,
-            CriadoEm = DateTime.UtcNow
-        };
-
-        _context.Minas.Add(mina);
-
-        await _context.SaveChangesAsync();
-
-        var response = new MinaResponse
-        {
-            Id = mina.Id,
-            EmpresaId = mina.EmpresaId,
-            Nome = mina.Nome,
-            Codigo = mina.Codigo,
-            Ativo = mina.Ativo,
-            CriadoEm = mina.CriadoEm
-        };
+        var mina = await _service.CriarAsync(request);
 
         return CreatedAtAction(
             nameof(GetMina),
             new { id = mina.Id },
-            response);
+            mina);
     }
 }
