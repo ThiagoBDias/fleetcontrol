@@ -1,9 +1,7 @@
 
 using FleetControl.Api.Application.DTOs.ModelosEquipamento;
-using FleetControl.Api.Domain.Entities;
-using FleetControl.Api.Infrastructure.Data;
+using FleetControl.Api.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace FleetControl.Api.Controllers;
 
@@ -11,46 +9,30 @@ namespace FleetControl.Api.Controllers;
 [Route("api/[controller]")]
 public class ModelosEquipamentoController : ControllerBase
 {
-    private readonly FleetControlDbContext _context;
+    private readonly IModeloEquipamentoService _service;
 
-    public ModelosEquipamentoController(FleetControlDbContext context)
+    public ModelosEquipamentoController(
+        IModeloEquipamentoService service)
     {
-        _context = context;
+        _service = service;
     }
 
     // GET: api/modelosequipamento
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ModeloEquipamentoResponse>>> GetModelosEquipamento()
+    public async Task<ActionResult<IEnumerable<ModeloEquipamentoResponse>>>
+        GetModelosEquipamento()
     {
-        var modelos = await _context.ModelosEquipamento
-            .AsNoTracking()
-            .Select(m => new ModeloEquipamentoResponse
-            {
-                Id = m.Id,
-                Nome = m.Nome,
-                Tipo = m.Tipo,
-                Ativo = m.Ativo
-            })
-            .ToListAsync();
+        var modelos = await _service.ListarAsync();
 
         return Ok(modelos);
     }
 
     // GET: api/modelosequipamento/1
     [HttpGet("{id:long}")]
-    public async Task<ActionResult<ModeloEquipamentoResponse>> GetModeloEquipamento(long id)
+    public async Task<ActionResult<ModeloEquipamentoResponse>>
+        GetModeloEquipamento(long id)
     {
-        var modelo = await _context.ModelosEquipamento
-            .AsNoTracking()
-            .Where(m => m.Id == id)
-            .Select(m => new ModeloEquipamentoResponse
-            {
-                Id = m.Id,
-                Nome = m.Nome,
-                Tipo = m.Tipo,
-                Ativo = m.Ativo
-            })
-            .FirstOrDefaultAsync();
+        var modelo = await _service.BuscarPorIdAsync(id);
 
         if (modelo is null)
             return NotFound();
@@ -60,39 +42,14 @@ public class ModelosEquipamentoController : ControllerBase
 
     // POST: api/modelosequipamento
     [HttpPost]
-    public async Task<ActionResult<ModeloEquipamentoResponse>> CriarModelo(
-        CriarModeloEquipamentoRequest request)
+    public async Task<ActionResult<ModeloEquipamentoResponse>>
+        CriarModelo(CriarModeloEquipamentoRequest request)
     {
-        var nome = request.Nome.Trim();
-
-        var modeloExiste = await _context.ModelosEquipamento
-            .AnyAsync(m => m.Nome == nome);
-
-        if (modeloExiste)
-            return Conflict("Já existe um modelo com esse nome.");
-
-        var modelo = new ModeloEquipamento
-        {
-            Nome = nome,
-            Tipo = request.Tipo.Trim(),
-            Ativo = true
-        };
-
-        _context.ModelosEquipamento.Add(modelo);
-
-        await _context.SaveChangesAsync();
-
-        var response = new ModeloEquipamentoResponse
-        {
-            Id = modelo.Id,
-            Nome = modelo.Nome,
-            Tipo = modelo.Tipo,
-            Ativo = modelo.Ativo
-        };
+        var modelo = await _service.CriarAsync(request);
 
         return CreatedAtAction(
             nameof(GetModeloEquipamento),
             new { id = modelo.Id },
-            response);
+            modelo);
     }
 }

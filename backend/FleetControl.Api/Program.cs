@@ -14,6 +14,7 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IEquipamentoService, EquipamentoService>();
 builder.Services.AddScoped<IEmpresaService, EmpresaService>();
 builder.Services.AddScoped<IMinaService, MinaService>();
+builder.Services.AddScoped<IModeloEquipamentoService, ModeloEquipamentoService>();
 
 // Tratamento global de exceções
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
