@@ -16,6 +16,9 @@ builder.Services.AddScoped<IEmpresaService, EmpresaService>();
 builder.Services.AddScoped<IMinaService, MinaService>();
 builder.Services.AddScoped<IModeloEquipamentoService, ModeloEquipamentoService>();
 
+// Novo módulo
+builder.Services.AddScoped<IOperadorService, OperadorService>();
+
 // Tratamento global de exceções
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
