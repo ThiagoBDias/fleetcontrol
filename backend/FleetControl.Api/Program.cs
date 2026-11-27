@@ -15,6 +15,10 @@ builder.Services.AddScoped<IEquipamentoService, EquipamentoService>();
 builder.Services.AddScoped<IEmpresaService, EmpresaService>();
 builder.Services.AddScoped<IMinaService, MinaService>();
 builder.Services.AddScoped<IModeloEquipamentoService, ModeloEquipamentoService>();
+builder.Services.AddScoped<IOperadorService, OperadorService>();
+
+// Serviço geoespacial
+builder.Services.AddScoped<IPoligonoService, PoligonoService>();
 
 // Novo módulo
 builder.Services.AddScoped<IOperadorService, OperadorService>();
